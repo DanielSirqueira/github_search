@@ -1,2 +1,2 @@
 # github_search
-github_search performs the <a>Clean Dart<\a> architecture with Modular and Bloc.
+github_search performs the [Clean Dart](https://github.com/Flutterando/Clean-Dart) architecture with Modular and Bloc.
