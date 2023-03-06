@@ -6,37 +6,42 @@ github_search performs the [Clean Dart](https://github.com/Flutterando/Clean-Dar
 Esse é uma documentação sobre o **Estado Atômico** em substituição do **Triple** no projeto da Elevagro.
 -->
 # Problema
-Durante o desenvolvimento do APP da Alevagro, identificamos um grande problema: temos apenas um endpoint para os conteúdos do aplicativo, que traz todos os conteúdos de uma vez. Porém, precisamos exibir esses conteúdos em telas separadas, tornando o processo de busca e tratamento muito lento.
 
-Nossa equipe conversou em uma Dayle e vimos que não faria muito sentido buscar os conteúdos em telas separadas. Diante disso, tivemos duas **tentativas de soluções**: uma delas foi usar o **Estado atômico**, enquanto a outra foi usar uma **Store global do Triple**.
+Como tratar e exibir os dados oriundos da API com um único 'endpoint' em diferentes telas da aplicação? O desafio aqui é consumir um mesmo 'endpoint', separar os dados para exibição em diferentes telas de uma mesma aplicação;
 
+# Hipótese de solução
+Por se tratar de um único 'endpoint' duas modalidades de consulta foram listadas na tentativa de solução a este impasse:
+1. Cada tela deveria consultar o 'endpoint', tratar e exibir seus dados; ou,
+2. A aplicação deveria possuir um estado global com todos os dados e cada tela consultaria este estado para tratar e exibir os dados filtrados.
 
-# Solução
-Essa documentação vai descrever como utilizamos o estado atômico e o estado global usando o RxNotifier para resolver o problema do endpoint no desenvolvimento do aplicativo da Alevagro.
+Quais as ferramentas escolhidas na tentativa de solução?
+1. Flutter Triple;
+2. RX Notifier; (Estado Atômico)
 
-Primeiramente, exploramos a solução do Estado Atômico, que permite o gerenciamento de estado de maneira mais granular e eficiente. Com o uso dessa técnica, conseguimos buscar os dados apenas uma vez, armazenando-os em variáveis de estado atômico, e disponibilizá-los para as telas que necessitam de forma rápida e precisa. Essa abordagem foi especialmente útil para evitar a lentidão causada pelo acesso frequente ao endpoint.
+# Estado Atômico com RX Notifier
 
-Em seguida, exploramos o uso do estado global com o RxNotifier, que permite a criação de um estado compartilhado e acessível de qualquer lugar do aplicativo. Com isso, foi possível criar uma Store global com os dados necessários para as diferentes telas, permitindo um acesso mais fácil e organizado aos conteúdos.
-
-Com a implementação dessas soluções, conseguimos melhorar significativamente o desempenho e a eficiência do aplicativo, tornando a experiência do usuário mais fluida e agradável.
-
-# Estado Atômico
 O estado atômico consiste em deixar a distribuição do estado mais fácil e separar a regra de negócio em um único lugar específico, como um reducer. Nesse modelo, a tela não precisa saber da regra de negócio, mas apenas do estado. Isso torna a distribuição do estado mais fácil de gerenciar e evita problemas de inconsistência no código. Além disso, torna a manutenção do código mais fácil, já que a lógica de negócio está centralizada em um único lugar.
+
+Exploramos a solução do Estado Atômico, que permite o gerenciamento de estado de maneira mais granular e eficiente. Com o uso dessa técnica, conseguimos buscar os dados apenas uma vez, armazenando-os em variáveis de estado atômico, e disponibilizá-los para as telas que necessitam de forma rápida e precisa. Essa abordagem foi especialmente útil para evitar a lentidão causada pelo acesso frequente ao 'endpoint'.
+
+Com o RxNotifier foi possível a criação de um estado compartilhado e acessível de qualquer lugar do aplicativo. Assim, os dados oriundos de uma única consulta ao 'endpoint' ficam disponíveis na aplicação para consulta das várias e diferentes telas. A cada demanda de uma tela diferente a consulta aos dados disponíveis na aplicação torna-se mais rápida e a propagação destes dados é feita para todos os seus consumidores de forma ágil e eficiente.
+
+Com a implementação dessa solução, conseguimos melhorar significativamente o desempenho e a eficiência do aplicativo, tornando a experiência do usuário mais fluida e agradável.
 
 ### Camadas
 O Estado Atômico consiste em trés camadas, sendo elas: Atoms, Reducers e view.
 
 ![image](https://user-images.githubusercontent.com/39882255/223015764-368b3b66-c997-4da1-875c-6c7455e7045b.png)
 
-- Atoms: Os Atoms são a primeira camada do Estado Atômico e representam os estados de uma tela.
-- Reducers: É a camada que fica responsável pela manipulação da regra de negócio e do estado. É onde ocorrem as mudanças de estado e as operações de negócio são realizadas. Esta camada é responsável por receber ações e aplicá-las no estado, realizando as validações necessárias antes de atualizar o estado.
+- Atoms: Os Atoms são a primeira camada do Estado Atômico e representam os estados de uma tela. Um atom é a menor unidade reativa de um sistema;
+- Reducers: É a camada que fica responsável pela manipulação da regra de negócio e atualização do estado dos nossos Atoms(variáveis reativas!). É onde ocorrem as mudanças de estado e as operações de negócio são realizadas. Esta camada é responsável por receber ações e aplicá-las no estado, realizando as validações necessárias antes de atualizar o estado.
 - View: São as páginas ou componentes do Flutter que consomem os Atoms, exibindo as informações e permitindo a interação do usuário com o aplicativo. Elas não conhecem diretamente as regras de negócio, mas apenas o estado gerenciado pelos Reducers.
 
 Abaixo está representada uma ilustração que exemplifica o funcionamento do estado atômico entre a View e o Atom. Na imagem, é possível visualizar como a tela reconhece os atoms e estes, por sua vez, atualizam o estado na tela.
 
 ![image](https://user-images.githubusercontent.com/39882255/223017633-e48cd6f6-f25e-4bad-8169-47bfe818f62a.png)
 
-A imagem abaixo ilustra o funcionamento do Reducer e do Atom no modelo de estado atômico. Nela, é possível observar que o Reducer reconhece o Atom e modifica os estados dos atoms por meio de eventos ou mudanças de estado do próprio Atom. Vale ressaltar que a camada do Reducer não é obrigatória no modelo de estado atômico, sendo utilizada somente quando o estado possui um evento específico. Em tópicos posteriores, esclareceremos melhor o papel do Reducer no modelo de estado atômico.
+A imagem abaixo ilustra o funcionamento do Reducer e do Atom no modelo de estado atômico. Nela, é possível observar que o Reducer reconhece o Atom e modifica os estados dos Atoms por meio de eventos ou mudanças de estado do próprio Atom. Vale ressaltar que a camada do Reducer não é obrigatória no modelo de estado atômico, sendo utilizada somente quando o estado possui um evento específico. Em tópicos posteriores, esclareceremos melhor o papel do Reducer no modelo de estado atômico.
 
 ![image](https://user-images.githubusercontent.com/39882255/223019020-c589a758-844d-4e76-8e5a-123050ed4d71.png)
 
@@ -44,7 +49,7 @@ Para uma melhor compreensão do fluxo completo do estado atômico, a imagem abai
 
 ![image](https://user-images.githubusercontent.com/39882255/223020348-560d4c2c-11c0-4184-8395-3a4a9048de89.png)
 
-# RxNotifier
+# RxNotifier como Pacote escolhido
 
 Para o teste do modelo do estado atômico, usaremos o pacote RxNotifier, desenvolvido pela Flutterando, que simplifica a implementação do estado atômico.
 
