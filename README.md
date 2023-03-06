@@ -340,12 +340,3 @@ Utilizando o ContentStore como uma forma atômica de gerenciar o estado, consegu
 3. Melhor desempenho: O estado atômico utiliza a programação reativa e a atualização de estado apenas quando necessário, o que ajuda a melhorar o desempenho do aplicativo.
 
 4. Menos erros de programação: Ao usar o estado atômico, há menos riscos de erros de programação, já que as atualizações de estado são gerenciadas de forma segura e consistente.
-
-# Desvantagens da utilização de estados atômicos
-1. Complexidade: a implementação de estados atômicos pode ser mais complexa do que a simples utilização de estados locais em cada tela, exigindo um conhecimento mais avançado em gerenciamento de estado no Flutter.
-
-2. Padronização: a adoção de estados atômicos em um projeto pode exigir uma padronização rigorosa na equipe para evitar conflitos e garantir a consistência do estado em todas as telas.
-
-3. Curva de aprendizado: a utilização de estados atômicos pode requerer uma curva de aprendizado maior para a equipe, especialmente se não houver experiência prévia em gerenciamento de estado atômico.
-
-4. Manutenção: a manutenção de estados atômicos pode ser mais complexa do que a manutenção de estados locais, exigindo uma atenção especial para evitar bugs e garantir a consistência do estado em todas as telas.
